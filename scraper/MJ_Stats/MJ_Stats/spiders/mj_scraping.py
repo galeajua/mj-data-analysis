@@ -11,17 +11,11 @@ class GameLogsSpider(scrapy.Spider):
                           "completegamelog19961997.htm", 
                           "completegamelog19951996.htm",
                           "completegamelog19941995.htm", 
-                          "completegamelog19921993.htm", 
-                          "completegamelog19911992.htm", 
-                          "completegamelog19901991.htm", 
-                          "completegamelog19891990.htm", 
-                          "completegamelog19881989.htm", 
-                          "completegamelog19871988.htm", 
-                          "completegamelog19861987.htm"]
+                          "completegamelog19921993.htm"]
 
-        gpx_href = [href for href in response.css('a::attr(href)').extract() if any(href.endswith(string) for string in target_strings)]
+        season_href = [href for href in response.css('a::attr(href)').extract() if any(href.endswith(string) for string in target_strings)]
 
-        for link in gpx_href:
+        for link in season_href:
             yield response.follow(link, self.parse_game_log)
 
 
@@ -31,28 +25,22 @@ class GameLogsSpider(scrapy.Spider):
             fg_value_1 = tr.css('td:nth-child(4)::text').get()
             fg_value_2 = tr.css('td:nth-child(5)::text').get()
 
-            item = { 
-                'MJG': tr.css('td:nth-child(1)::text').get(),
-                'TmG': tr.css('td:nth-child(2)::text').get(),
+            item = {
+                'MJ career game': tr.css('td:nth-child(1)::text').get(),
+                'Team game this season': tr.css('td:nth-child(2)::text').get(),
                 'Date': date_value,
                 'Opponent': f"{fg_value_1} {fg_value_2}",
                 'Result': tr.css('td:nth-child(6)::text').get(),
-                'MP': tr.css('td:nth-child(7)::text').get(),
-                'FG': tr.css('td:nth-child(8)::text').get(),
-                'FGA': tr.css('td:nth-child(9)::text').get(),
-                '3P': tr.css('td:nth-child(10)::text').get(),
-                '3PA': tr.css('td:nth-child(11)::text').get(),
-                'FT': tr.css('td:nth-child(12)::text').get(),
-                'FTA': tr.css('td:nth-child(13)::text').get(),
-                'ORB': tr.css('td:nth-child(14)::text').get(),
-                'DRB': tr.css('td:nth-child(15)::text').get(),
-                'TRB': tr.css('td:nth-child(16)::text').get(),
-                'AST': tr.css('td:nth-child(17)::text').get(),
-                'STL': tr.css('td:nth-child(18)::text').get(),
-                'BLK': tr.css('td:nth-child(19)::text').get(),
-                'TO': tr.css('td:nth-child(20)::text').get(),
-                'PF': tr.css('td:nth-child(21)::text').get(),
-                'PTS': tr.css('td:nth-child(22)::text').get()
+                'Minutes played': tr.css('td:nth-child(7)::text').get(),
+                'Field goal made': tr.css('td:nth-child(8)::text').get(),
+                '3-Pointers made': tr.css('td:nth-child(10)::text').get(),
+                'Free throws made': tr.css('td:nth-child(12)::text').get(),
+                'Total rebounds': tr.css('td:nth-child(16)::text').get(),
+                'Assists': tr.css('td:nth-child(17)::text').get(),
+                'Steals': tr.css('td:nth-child(18)::text').get(),
+                'Blocks': tr.css('td:nth-child(19)::text').get(),
+                'Personal fouls': tr.css('td:nth-child(21)::text').get(),
+                'Points': tr.css('td:nth-child(22)::text').get()
                 }
              
             if not any(value == "None" or value is None for value in item.values()):
