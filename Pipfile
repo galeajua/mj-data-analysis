@@ -10,6 +10,11 @@ scrapy = "*"
 beautifulsoup4 = "*"
 scrapy-selenium = "*"
 selenium = "*"
+pymongo = "*"
+pandas = "*"
+scikit-learn = "*"
+azure-storage-blob = "*"
+azure-identity = "*"
 
 [dev-packages]
 
