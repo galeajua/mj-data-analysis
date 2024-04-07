@@ -16,27 +16,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12.1' # install the python version needed
-          
-      - name: install pipenv
-        run: pip install pipenv
 
       - name: install python packages
-        run: pipenv install --dev
+        run: pip install -r requirements.txt
           
       - name: scrape mj data
         working-directory: ./scraper/MJ_Stats
-        run: pipenv run scrapy crawl game_logs -o output.jl
-
-      - name: Print virtual environment location
-        run: pipenv --venv
-
-      - name: Verify Python executable and version
-        run: |
-          pipenv run which python
-          pipenv run python --version
-
-      - name: List installed packages
-        run: pipenv run pip list
+        run: scrapy crawl game_logs -o output.jl
 
       - name: upload data to mongodb
         working-directory: scraper/MJ_Stats/import
@@ -44,8 +30,8 @@ jobs:
 
       - name: build model
         working-directory: model
-        run: pipenv run python ./model.py -u "${{secrets.MONGODB_URI}}"
+        run: python ./model.py -u "${{secrets.MONGODB_URI}}"
 
       - name: upload model
         working-directory: model
-        run: pipenv run python ./save.py -c "${{secrets.AZURE_STORAGE_CONNECTION_STRING}}"
+        run: python ./save.py -c "${{secrets.AZURE_STORAGE_CONNECTION_STRING}}"
