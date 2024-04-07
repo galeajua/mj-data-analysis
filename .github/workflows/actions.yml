@@ -26,16 +26,16 @@ jobs:
           
       - name: scrape mj data
         working-directory: ./scraper/MJ_Stats/MJ_Stats/spiders
-        run: pipenv run scrapy crawl game_logs -o output.jl
+        run: scrapy crawl game_logs -o output.jl
 
       - name: upload data to mongodb
         working-directory: scraper/MJ_Stats/import
-        run: pipenv run python ./mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
+        run: python ./mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
 
       - name: build model
         working-directory: model
-        run: pipenv run python ./model.py -u "${{secrets.MONGODB_URI}}"
+        run: python ./model.py -u "${{secrets.MONGODB_URI}}"
 
       - name: upload model
         working-directory: model
-        run: pipenv run python ./save.py -c "${{secrets.AZURE_STORAGE_CONNECTION_STRING}}"
+        run: python ./save.py -c "${{secrets.AZURE_STORAGE_CONNECTION_STRING}}"
