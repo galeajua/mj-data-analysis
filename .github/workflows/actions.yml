@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12.1' # install the python version needed
+          cache: 'pip'
 
       - name: install python packages
         run: pip install -r requirements.txt
@@ -26,7 +27,7 @@ jobs:
 
       - name: upload data to mongodb
         working-directory: scraper/MJ_Stats/import
-        run: python mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
+        run: python ./mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
 
       - name: build model
         working-directory: model
