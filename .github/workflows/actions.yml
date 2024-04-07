@@ -27,9 +27,20 @@ jobs:
         working-directory: ./scraper/MJ_Stats
         run: pipenv run scrapy crawl game_logs -o output.jl
 
+      - name: Print virtual environment location
+        run: pipenv --venv
+
+      - name: Verify Python executable and version
+        run: |
+          pipenv run which python
+          pipenv run python --version
+
+      - name: List installed packages
+        run: pipenv run pip list
+
       - name: upload data to mongodb
         working-directory: scraper/MJ_Stats/import
-        run: pipenv run python ./mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
+        run: pipenv run python mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
 
       - name: build model
         working-directory: model
