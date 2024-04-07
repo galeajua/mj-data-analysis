@@ -1,5 +1,5 @@
-import json
 from pymongo import MongoClient
+import json
 import logging
 import argparse
 
