@@ -15,6 +15,7 @@ pandas = "*"
 scikit-learn = "*"
 azure-storage-blob = "*"
 azure-identity = "*"
+flask-cors = "*"
 
 [dev-packages]
 

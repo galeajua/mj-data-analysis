@@ -1,0 +1,43 @@
+name: Scrape Data, build and upload Model
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout repo content
+        uses: actions/checkout@v4 # checkout the repository content to github runner
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.1' # install the python version needed
+          cache: 'pipenv'
+          
+      - name: install pipenv
+        run: pip install pipenv
+
+      - name: install python packages
+        run: |
+          pipenv install --dev
+          pipenv lock -r > requirements.txt
+          
+      - name: scrape mj data
+        working-directory: ./scraper/MJ_Stats/MJ_Stats/spiders
+        run: pipenv run scrapy crawl game_logs -o output.jl
+
+      - name: upload data to mongodb
+        working-directory: scraper/MJ_Stats/import
+        run: pipenv run python ./mongo_import.py -c mj_career -db mj_career_stats -i ../MJ_Stats/spiders/output.jl -u "${{secrets.MONGODB_URI}}"
+
+      - name: build model
+        working-directory: model
+        run: pipenv run python ./model.py -u "${{secrets.MONGODB_URI}}"
+
+      - name: upload model
+        working-directory: model
+        run: pipenv run python ./save.py -c "${{secrets.AZURE_STORAGE_CONNECTION_STRING}}"
