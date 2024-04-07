@@ -22,9 +22,7 @@ jobs:
         run: pip install pipenv
 
       - name: install python packages
-        run: |
-          pipenv install --dev
-          pipenv lock -requirements > requirements.txt
+        run: pipenv install --dev
           
       - name: scrape mj data
         working-directory: ./scraper/MJ_Stats/MJ_Stats/spiders
